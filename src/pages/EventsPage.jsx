@@ -6,10 +6,13 @@ import Reveal from '../components/Reveal.jsx'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 const REGISTRATION_ENDPOINT = import.meta.env.VITE_REGISTRATION_ENDPOINT
 
+const SESSIONS = ['October 6, 1:00 PM', 'October 15, 6:00 PM']
+
 function validate(data) {
   if (!data.firstName || !data.lastName) return 'Enter your first and last name.'
   if (!EMAIL_RE.test(data.email)) return 'Enter a valid email address.'
   if (data.cellphone.replace(/\D/g, '').length < 7) return 'Enter a phone number we can reach you on.'
+  if (!data.Date) return 'Choose a session date.'
   return null
 }
 
@@ -28,7 +31,7 @@ async function submitRegistration(data) {
 }
 
 function EventsPage() {
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', cellphone: '' })
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', cellphone: '', Date: '' })
   const [companyWebsite, setCompanyWebsite] = useState('')
   const [status, setStatus] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -80,7 +83,7 @@ function EventsPage() {
 
   function confirmRegistration() {
     setDone(true)
-    setForm({ firstName: '', lastName: '', email: '', cellphone: '' })
+    setForm({ firstName: '', lastName: '', email: '', cellphone: '', Date: '' })
     setCompanyWebsite('')
     if (panelRef.current) {
       panelRef.current.scrollIntoView({ block: 'center', behavior: 'smooth' })
@@ -144,7 +147,6 @@ function EventsPage() {
 
             <dl className="flex flex-wrap gap-0 border-t border-white/15">
               {[
-                ['Date', 'To be confirmed'],
                 ['Duration', '60 minutes'],
                 ['Language', 'English'],
               ].map(([dt, dd]) => (
@@ -245,6 +247,29 @@ function EventsPage() {
                       onChange={handleChange}
                       className="w-full rounded border border-gray-200 bg-gray-50 px-3.5 py-3 text-base transition-colors focus:border-accent focus:bg-white focus:outline-none focus:ring-2 focus:ring-accent/20"
                     />
+                  </div>
+
+                  <div>
+                    <label htmlFor="Date" className="mb-1.5 block text-sm font-bold text-gray-700">
+                      Session date
+                    </label>
+                    <select
+                      id="Date"
+                      name="Date"
+                      required
+                      value={form.Date}
+                      onChange={handleChange}
+                      className="w-full rounded border border-gray-200 bg-gray-50 px-3.5 py-3 text-base transition-colors focus:border-accent focus:bg-white focus:outline-none focus:ring-2 focus:ring-accent/20"
+                    >
+                      <option value="" disabled>
+                        Choose a session
+                      </option>
+                      {SESSIONS.map((session) => (
+                        <option key={session} value={session}>
+                          {session}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
